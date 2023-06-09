@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>烟火气-首页</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+    <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/static/js/slide.js"></script>
+</head>
+<body>
+
+{% include "component/top.html" %}
+
+<div class="search_bar clearfix">
+    {% include "component/index_logo.html" %}
+    {% include "component/search_goods.html" %}
+
+    {% include "component/cart_tip.html" %}
+
+</div>
+
+<div class="navbar_con">
+    <div class="navbar">
+        <h1 class="fl">全部商品分类</h1>
+        <ul class="navlist fl">
+            <li><a href="/app/index/">首页</a></li>
+            <li class="interval">|</li>
+            <li><a href="">掌上便民</a></li>
+            <li class="interval">|</li>
+            <li><a href="https://www.sztu.edu.cn/">抽奖</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="center_con clearfix">
+    <ul class="subnav fl">
+        {% for goods_type in goods_type_list %}
+            <li><a href="{% url 'app:list' %}?type={{ goods_type.0 }}">{{ goods_type.1 }}</a></li>
+        {% endfor %}
+    </ul>
+    <div class="slide fl">
+        <ul class="slide_pics">
+            <li><a href="#"><img src="/static/images/banner01.png" alt="幻灯片"></a></li>
+            <li><a href="#"><img src="/static/images/banner02.png" alt="幻灯片"></a></li>
+            <li><a href="#"><img src="/static/images/banner03.png" alt="幻灯片"></a></li>
+            <li><a href="#"><img src="/static/images/banner04.png" alt="幻灯片"></a></li>
+            <li><a href="#"><img src="/static/images/banner05.png" alt="幻灯片"></a></li>
+        </ul>
+        <div class="prev"></div>
+        <div class="next"></div>
+        <ul class="points"></ul>
+    </div>
+    <div class="adv fl">
+        <a href="#"><img src="/static/images/adv01.jpg"></a>
+        <a href="#"><img src="/static/images/adv02.jpg"></a>
+    </div>
+</div>
+
+{% for goods in home_goods_list %}
+    <div class="list_model">
+        <div class="list_title clearfix">
+            <h3 class="fl" id="{{ goods.goods_type_id }}">{{ goods.goods_type_name }}</h3>
+<!--            <div class="subtitle fl">-->
+<!--                <span>|</span>-->
+<!--                <a href="#">鲜芒</a>-->
+<!--                <a href="#">加州提子</a>-->
+<!--                <a href="#">亚马逊牛油果</a>-->
+<!--            </div>-->
+            <a href="{% url 'app:list' %}?type={{ goods.goods_type_id }}" class="goods_more fr" id="fruit_more">查看更多 ></a>
+        </div>
+
+        <div class="goods_con clearfix">
+            <div class="goods_banner fl"><img src="/static/images/{{ goods.goods_type_id }}.jpg"></div>
+            <ul class="goods_list fl">
+                {% for goods_info in goods.goods_list %}
+                    <li>
+                        <h4><a href="{% url 'app:detail' %}?gid={{ goods_info.id }}">{{ goods_info.name }}</a></h4>
+                        <a href="{% url 'app:detail' %}?gid={{ goods_info.id }}"><img
+                                src="/static/images/{{ goods_info.pic }}"/></a>
+                        <div class="prize">¥ {{ goods_info.price }}</div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endfor %}
+
+{% include "component/foot.html" %}
+
+<script type="text/javascript" src="/static/js/slide.js"></script>
+{#	<script type="text/javascript">#}
+{#		BCSlideshow('focuspic');#}
+{#		var oFruit = document.getElementById('fruit_more');#}
+{#		var oShownum = document.getElementById('show_count');#}
+{##}
+{#		var hasorder = localStorage.getItem('order_finish');#}
+{##}
+{#		if(hasorder)#}
+{#		{#}
+{#			oShownum.innerHTML = '2';#}
+{#		}#}
+{##}
+{#		oFruit.onclick = function(){#}
+{#			window.location.href = 'list.html';#}
+{#		}#}
+{#	</script>#}
+</body>
+</html>

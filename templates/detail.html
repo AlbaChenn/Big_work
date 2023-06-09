@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>烟火气-商品详情</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+
+</head>
+<body>
+
+{% include "component/top.html" %}
+
+<div class="search_bar clearfix">
+    {% include "component/index_logo.html" %}
+    {% include "component/search_goods.html" %}
+    {% include "component/cart_tip.html" %}
+</div>
+
+<div class="navbar_con">
+    <div class="navbar clearfix">
+        <div class="subnav_con fl">
+            <h1>全部商品分类</h1>
+            <span></span>
+            <ul class="subnav">
+                {% for goods_type in goods_type_list %}
+                    <li><a href="{% url 'app:list' %}?type={{ goods_type.0 }}">{{ goods_type.1 }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <ul class="navlist fl">
+            <li><a href="/app/index/">首页</a></li>
+            <li class="interval">|</li>
+            <li><a href="">掌上便民</a></li>
+            <li class="interval">|</li>
+            <li><a href="">抽奖</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="breadcrumb">
+    <a href="#">全部分类</a>
+    <span>></span>
+    <a href="#">{{ goods_type_name }}</a>
+    <span>></span>
+    <a href="#">商品详情</a>
+</div>
+
+<div class="goods_detail_con clearfix">
+    <div class="goods_detail_pic fl"><img src="/static/images/{{ goods_info.pic }}"></div>
+
+    <div class="goods_detail_list fr">
+        <h3>{{ goods_info.name }}</h3>
+        <p>{{ goods_info.title }}</p>
+        <div class="prize_bar">
+            <span class="show_pirze">¥<em>{{ goods_info.price }}</em></span>
+            <span class="show_unit">单  位：{{ goods_info.unit }}</span>
+        </div>
+        <div class="goods_num clearfix">
+            <div class="num_name fl">数 量：</div>
+            <div class="num_add fl">
+                <input type="text" class="num_show fl" name="buyCount" id="idBuyCount" value="1" onchange="onChangeBuyNum({{ goods_info.price }})">
+                <a href="#" onclick="changeBuyNum(1, {{ goods_info.price }})" class="add fr">+</a>
+                <a href="#" onclick="changeBuyNum(-1, {{ goods_info.price }})" class="minus fr">-</a>
+            </div>
+        </div>
+        <div class="total">总价：<span id="idTotalAmount">{{ goods_info.price }}</span>元</div>
+        <div class="operate_btn">
+            <a href="#" onclick="validBuyNow()" class="buy_btn">立即购买</a>
+            <a href="#" onclick="validAddCart()" class="add_cart" id="add_cart">加入购物车</a>
+        </div>
+
+        <div style="display: none">
+            <!--立即购买表单-->
+            <form name="buyNowForm" action="{% url 'app:buy_now' %}" method="post" >
+                <input type="hidden" name="gid" value="{{ goods_info.id }}" />
+                <input type="hidden" name="gcount" id="edit_gcount" />
+            </form>
+
+            <!--加入购物车表单-->
+            <form name="addCartForm" action="{% url 'app:add_cart' %}" method="post" >
+                <input type="hidden" name="gid" value="{{ goods_info.id }}" />
+                <input type="hidden" name="gcount" id="cart_gcount" />
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="main_wrap clearfix">
+    <div class="l_wrap fl clearfix">
+        <div class="new_goods">
+            <h3>新品推荐</h3>
+            <ul>
+                {% for new_goods in new_goods_list %}
+                    <li>
+                        <a href="{% url 'app:detail' %}?gid={{ new_goods.id }}"><img
+                                src="/static/images/{{ new_goods.pic }}"></a>
+                        <h4><a href="{% url 'app:detail' %}?gid={{ new_goods.id }}">{{ new_goods.name }}</a></h4>
+                        <div class="prize">￥{{ new_goods.price }}</div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="r_wrap fr clearfix">
+        <ul class="detail_tab clearfix">
+            <li class="active">商品介绍</li>
+            <li>评论</li>
+        </ul>
+
+        <div class="tab_content">
+            <dl>
+                <dt>商品详情：</dt>
+                <dd>{{ goods_info.detail }}</dd>
+            </dl>
+        </div>
+
+    </div>
+</div>
+
+{% include "component/foot.html" %}
+
+<div class="add_jump"></div>
+
+<script type="text/javascript" src="js/jquery-1.12.2.js"></script>
+<script type="text/javascript">
+    var $add_x = $('#add_cart').offset().top;
+    var $add_y = $('#add_cart').offset().left;
+
+    var $to_x = $('#show_count').offset().top;
+    var $to_y = $('#show_count').offset().left;
+
+    $(".add_jump").css({'left': $add_y + 80, 'top': $add_x + 10, 'display': 'block'})
+
+    function changeBuyNum(num, price) {
+        var buyNumObj = document.getElementById("idBuyCount");
+        var curNum = buyNumObj.value;
+        if (curNum != "") {
+            curNum = parseInt(curNum);
+        } else {
+            curNum = 1;
+        }
+        curNum = curNum + num;
+        if (curNum <= 0) {
+            curNum = 1;
+        }
+        buyNumObj.value = curNum + "";
+
+        onChangeBuyNum(price);
+    }
+
+    function onChangeBuyNum(price) {
+        var curNum = document.getElementById("idBuyCount").value;
+        var totalAmount = price * parseInt(curNum);
+         document.getElementById("idTotalAmount").innerText = totalAmount.toFixed(2);
+    }
+
+    function validBuyNow() {
+        document.getElementById("edit_gcount").value = document.getElementById("idBuyCount").value;
+        document.buyNowForm.submit();
+    }
+
+    function validAddCart() {
+        document.getElementById("cart_gcount").value = document.getElementById("idBuyCount").value;
+        document.addCartForm.submit();
+    }
+
+</script>
+
+</body>
+</html>

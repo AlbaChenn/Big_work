@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>欢迎来到烟火气-购物车</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+</head>
+<body>
+
+{% include "component/top.html" %}
+
+<div class="search_bar clearfix">
+    {% include "component/index_logo.html" %}
+    <div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;购物车</div>
+    {% include "component/search_goods.html" %}
+</div>
+
+<div class="total_count">全部商品<em>{{ goods_total_num }}</em>件</div>
+<ul class="cart_list_th clearfix">
+    <li class="col01">商品名称</li>
+    <li class="col02">商品单位</li>
+    <li class="col03">商品价格</li>
+    <li class="col04">数量</li>
+    <li class="col05">小计</li>
+    <li class="col06">操作</li>
+</ul>
+
+{% for goods_info in goods_list %}
+    <ul class="cart_list_td clearfix">
+{#        <li class="col01"><input type="checkbox" name="cart_goods_id" checked></li>#}
+        <li class="col01"></li>
+        <li class="col02"><img src="/static/images/{{ goods_info.pic }}"></li>
+        <li class="col03">{{ goods_info.name }}<br><em>{{ goods_info.price }}元/{{ goods_info.unit }}</em></li>
+        <li class="col04">{{ goods_info.unit }}</li>
+        <li class="col05">{{ goods_info.price }}元</li>
+        <li class="col06">
+            <div class="num_add">
+                <a href="#" class="add fl" onclick="changeBuyNum(1, {{ goods_info.id }})">+</a>
+                <input type="text" class="num_show fl" id="cartFormBuyNum{{ goods_info.id }}"
+                       value="{{ goods_info.buy_num }}" onchange="onChangeBuyNum({{ goods_info.id }})">
+                <a href="#" class="minus fl" onclick="changeBuyNum(-1, {{ goods_info.id }})" >-</a>
+            </div>
+        </li>
+        <li class="col07">{{ goods_info.total_amount }}元</li>
+        <li class="col08"><a href="{% url 'app:del_cart' %}?gid={{ goods_info.id }}">删除</a></li>
+    </ul>
+{% endfor %}
+
+<!-- 修改购物车商品数量 -->
+<div style="display: none">
+     <form name="updateCartForm" action="{% url 'app:update_cart' %}" method="post" >
+        <input type="hidden" name="gid" id="id_card_gid" />
+        <input type="hidden" name="gcount" id="id_cart_gcount" />
+    </form>
+</div>
+
+<ul class="settlements">
+{#    <li class="col01"><input type="checkbox" name="" checked=""></li>#}
+{#    <li class="col02">全选</li>#}
+    <li class="col01"></li>
+    <li class="col02"></li>
+    <li class="col03">合计(不含运费)：<span>¥</span><em>{{ goods_total_amount }}</em><br>共计<b>{{ goods_total_num }}</b>件商品</li>
+    <li class="col04"><a href="{% url 'app:place_order' %}">去结算</a></li>
+</ul>
+
+{% include "component/foot.html" %}
+
+<script type="text/javascript">
+    function changeBuyNum(num, goods_id) {
+        var buyNumObj = document.getElementById("cartFormBuyNum"+goods_id);
+        var curNum = buyNumObj.value;
+        if (curNum != "") {
+            curNum = parseInt(curNum);
+        } else {
+            curNum = 1;
+        }
+        curNum = curNum + num;
+        if (curNum <= 0) {
+            curNum = 1;
+        }
+        buyNumObj.value = curNum + "";
+
+        // 通知修改
+        onChangeBuyNum(goods_id);
+    }
+
+    function onChangeBuyNum(goods_id) {
+        var buyNum = document.getElementById("cartFormBuyNum"+goods_id).value;
+        console.log("===变了", goods_id, buyNum)
+
+        document.getElementById("id_card_gid").value = goods_id;
+        document.getElementById("id_cart_gcount").value = buyNum;
+        document.updateCartForm.submit();
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>烟火气-用户中心</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+</head>
+<body>
+
+{% include "component/top.html" %}
+
+<div class="search_bar clearfix">
+    {% include "component/index_logo.html" %}
+    <div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;用户中心</div>
+   {% include "component/search_goods.html" %}
+</div>
+
+<div class="main_con clearfix">
+    <div class="left_menu_con clearfix">
+        <h3>用户中心</h3>
+        <ul>
+            <li><a href="{% url 'app:center' %}">· 个人信息</a></li>
+            <li><a href="{% url 'app:order' %}" class="active">· 全部订单</a></li>
+            <li><a href="{% url 'app:site' %}">· 收货地址</a></li>
+        </ul>
+    </div>
+
+    <div class="right_content clearfix">
+        <h3 class="common_title2">全部订单</h3>
+
+        {% for order in user_order_list %}
+            <ul class="order_list_th w978 clearfix">
+                <li class="col01">{{ order.create_time }}</li>
+                <li class="col02">订单号：{{ order.order_no }}</li>
+                <li class="col02 stress">{{ order.pay_status_desc }} | {{ order.pay_mode_desc }}</li>
+            </ul>
+
+            <table class="order_list_table w980">
+                <tbody>
+                <tr>
+                    <td width="55%">
+                        {% for detail in order.order_detail_list %}
+                            <ul class="order_goods_list clearfix">
+                                <li class="col01"><img src="/static/images/{{ detail.goods_pic }}"></li>
+                                <li class="col02">{{ detail.goods_name }}<em>{{ detail.goods_price }}元/{{ detail.goods_unic }}</em>
+                                </li>
+                                <li class="col03">{{ detail.goods_buy_num }}</li>
+                                <li class="col04">{{ detail.goods_amount }}元</li>
+                            </ul>
+                        {% endfor %}
+                    </td>
+                    <td width="15%">{{ order.pay_amount }}元</td>
+                    <td width="15%">{{ order.pay_status_desc }}</td>
+                    <td width="15%">
+                        {% if order.pay_status == 1 %}
+                            <a href="{% url 'app:pay_order' %}?order_id={{ order.id }}" class="oper_btn">去付款</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        {% endfor %}
+
+        <div class="pagenation">
+            <a href="#">
+                <上一页
+            </a>
+            <a href="#" class="active">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <a href="#">4</a>
+            <a href="#">5</a>
+            <a href="#">下一页></a>
+        </div>
+    </div>
+</div>
+
+{% include "component/foot.html" %}
+
+</body>
+</html>

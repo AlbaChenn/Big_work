@@ -1,0 +1,7 @@
+<div class="search_con fl">
+    <form action="{% url 'app:list' %}" method="get">
+        <input type="text" class="input_text fl" name="search_keyword" placeholder="搜索商品" value="{{ search_keyword }}">
+        <input type="hidden" name="page_num" value="1">
+        <input type="submit" class="input_btn fr" value="搜索">
+    </form>
+</div>

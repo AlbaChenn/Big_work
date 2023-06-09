@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>烟火气-用户中心</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+</head>
+<body>
+
+{% include "component/top.html" %}
+
+<div class="search_bar clearfix">
+    {% include "component/index_logo.html" %}
+    <div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;用户中心</div>
+    {% include "component/search_goods.html" %}
+</div>
+
+<div class="main_con clearfix">
+    <div class="left_menu_con clearfix">
+        <h3>用户中心</h3>
+        <ul>
+            <li><a href="{% url 'app:center' %}" class="active">· 个人信息</a></li>
+            <li><a href="{% url 'app:order' %}">· 全部订单</a></li>
+            <li><a href="{% url 'app:site' %}">· 收货地址</a></li>
+        </ul>
+    </div>
+    <div class="right_content clearfix">
+        <div class="info_con clearfix">
+            <h3 class="common_title2">基本信息</h3>
+            <ul class="user_info_list">
+                <li><span>用户名：</span>{{ user_info.username }}</li>
+                <li><span>联系方式：</span>{{ user_info.phone }}</li>
+                <li><span>联系地址：</span>{{ user_info.addr }}</li>
+            </ul>
+        </div>
+
+        <h3 class="common_title2">最近浏览</h3>
+        <div class="has_view_list">
+            <ul class="goods_type_list clearfix">
+                {% for goods_info in goods_list %}
+                <li>
+                    <a href="{% url 'app:detail' %}?gid={{ goods_info.id }}"><img src="/static/images/{{ goods_info.pic }}" /></a>
+                    <h4><a href="{% url 'app:detail' %}?gid={{ goods_info.id }}">{{ goods_info.name }}</a></h4>
+                    <div class="operate">
+                        <span class="prize">￥{{ goods_info.price }}</span>
+                        <span class="unit">{{ goods_info.price }}/{{ goods_info.unit }}</span>
+{#                        <a href="#" class="add_goods" title="加入购物车"></a>#}
+                    </div>
+                </li>
+                {% endfor %}
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+{% include "component/foot.html" %}
+
+</body>
+</html>s
